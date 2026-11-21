@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+         version="6.0">
+
+    <display-name>Smart Hospital</display-name>
+
+    <!--
+        Filters are declared here, not with @WebFilter, so the order is
+        guaranteed: the trace filter must run first and stamp X-Trace-Id on every
+        response, including those rejected by the API security guard.
+    -->
+    <filter>
+        <filter-name>traceIdFilter</filter-name>
+        <filter-class>com.smarthospital.platform.web.TraceIdFilter</filter-class>
+        <async-supported>true</async-supported>
+    </filter>
+    <filter-mapping>
+        <filter-name>traceIdFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>ERROR</dispatcher>
+        <dispatcher>ASYNC</dispatcher>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>apiSecurityFilter</filter-name>
+        <filter-class>com.smarthospital.platform.web.ApiSecurityFilter</filter-class>
+        <async-supported>true</async-supported>
+    </filter>
+    <filter-mapping>
+        <filter-name>apiSecurityFilter</filter-name>
+        <url-pattern>/api/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>ASYNC</dispatcher>
+    </filter-mapping>
+
+    <!--
+        Session cookie defaults. SessionCookieConfigListener overrides Secure at
+        startup based on smarthospital.cookies.secure / SMART_HOSPITAL_ENV, so the
+        same artifact works over plain HTTP on the LAN during development and
+        over TLS in production.
+    -->
+    <session-config>
+        <session-timeout>30</session-timeout>
+        <cookie-config>
+            <http-only>true</http-only>
+            <secure>false</secure>
+        </cookie-config>
+        <tracking-mode>COOKIE</tracking-mode>
+    </session-config>
+
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+</web-app>

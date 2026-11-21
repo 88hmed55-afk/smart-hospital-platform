@@ -1,0 +1,12 @@
+# Build configuration — copy to build.properties and adjust.
+# This file is loaded by every Ant module. Do not commit real credentials.
+
+# Absolute path to the Jakarta EE 10 API jar used for compilation only.
+# The runtime is provided by GlassFish 7.
+jakarta.api.jar=C:/smart-hospital/lib/jakarta.jakartaee-api-10.0.0.jar
+
+# GlassFish installation (used by deployment helpers, not by compilation).
+glassfish.home=C:/glassfish7
+
+# MySQL Connector/J (used by db/build.xml and the migration runner).
+mysql.connector.jar=C:/smart-hospital/lib/mysql-connector-j-8.4.0.jar

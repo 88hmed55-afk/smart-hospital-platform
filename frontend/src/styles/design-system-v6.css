@@ -1,0 +1,945 @@
+/*
+ * Smart Hospital — design system v6 "one vocabulary"
+ * ---------------------------------------------------------------------------
+ * Loaded after v1–v5. This layer does not add decoration; it removes the last
+ * structural inconsistencies so every module reads the same way:
+ *
+ *   - one segmented tab bar instead of nine underline styles;
+ *   - one card header, whether the markup uses .card-header or a bare <h2>;
+ *   - one KPI strip with hairline dividers instead of floating tiles;
+ *   - one hairline definition matrix for meta/detail facts;
+ *   - one compact control scale (36px controls, 30px small buttons);
+ *   - capped, scrollable clinical boards so a page never becomes a 2 500px wall;
+ *   - Arabic-safe typography (no negative tracking, no letter-spaced Arabic).
+ *
+ * Everything is additive: deleting this file returns the v5 look.
+ */
+
+:root {
+  --v6-radius-card: 14px;
+  --v6-radius-control: 9px;
+  --v6-control: 36px;
+  --v6-control-sm: 30px;
+  --v6-page-gap: 18px;
+  --v6-card-pad: 16px 18px;
+}
+
+/* ===================================================================== page */
+
+.content {
+  padding: 20px 24px 30px;
+}
+
+.page {
+  gap: var(--v6-page-gap);
+}
+
+/* The header is one band: title and subtitle on one axis, actions on the other. */
+.page-header {
+  align-items: center;
+  gap: 14px;
+  padding-block-end: 12px;
+  border-block-end: 1px solid var(--color-border);
+}
+
+.page-header h1 {
+  font-size: clamp(1.24rem, 1.1rem + 0.34vw, 1.38rem);
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.012em;
+}
+
+.page-header .muted,
+.page-header .page-subtitle {
+  margin-block-start: 2px;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--color-muted);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Arabic must not be tracked: the script is joined and negative spacing
+   collides glyphs. Latin keeps its tighter display rhythm. */
+[dir="rtl"] .page-header h1,
+[dir="rtl"] .card-header h2,
+[dir="rtl"] .card > h2,
+[dir="rtl"] .modal-header h2,
+[dir="rtl"] .kpi-value,
+[dir="rtl"] .data-table th {
+  letter-spacing: normal;
+}
+
+/* ==================================================================== cards */
+
+.card {
+  padding: var(--v6-card-pad);
+  border: 1px solid var(--color-border);
+  border-radius: var(--v6-radius-card);
+  box-shadow: none;
+  background: var(--color-surface);
+}
+
+/* One header shape, whichever markup the module happens to use. */
+.card-header,
+.card > h2:first-child,
+.card > h2 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 12px;
+  padding-block-end: 10px;
+  border-block-end: 1px solid var(--color-border-soft);
+}
+
+.card > h2:first-child,
+.card > h2 {
+  display: block;
+  font-size: 0.97rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.card-header h2,
+.card > h2 {
+  margin: 0;
+  font-size: 0.97rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.card-header .muted {
+  margin-block-start: 2px;
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+/* A header that is the whole card (loading / empty / error) needs no rule. */
+.card-header:only-child,
+.card-header:last-child,
+.card > h2:only-child {
+  padding-block-end: 0;
+  margin-block-end: 0;
+  border-block-end: 0;
+}
+
+/* Empty-state cards keep their centred heading, not the section-header rule. */
+.card.empty-state > h2,
+.card:has(.empty-state) > h2 {
+  border-block-end: 0;
+  padding-block-end: 0;
+  text-align: center;
+}
+
+/* A second header is a section break inside the same frame. */
+.card > .card-header ~ .card-header {
+  margin-block-start: 14px;
+  padding-block-start: 12px;
+  border-block-start: 1px solid var(--color-border-soft);
+  border-block-end: 0;
+  padding-block-end: 0;
+}
+
+/* A toolbar that opens a card is the card's first row, not a stray strip. */
+.card > .toolbar:first-child {
+  margin-block: 0 12px;
+}
+
+/* ================================================================ KPI strip */
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+  gap: 0;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--v6-radius-card);
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+.kpi-grid > .kpi-card {
+  gap: 2px;
+  padding: 13px 16px;
+  border: 0;
+  border-inline-start: 1px solid var(--color-border-soft);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
+}
+
+.kpi-grid > .kpi-card:first-child {
+  border-inline-start: 0;
+}
+
+/* The old accent bar was decoration; the divider already groups the strip. */
+.kpi-card::before,
+.card.kpi-card::before {
+  display: none;
+}
+
+.kpi-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-muted);
+  line-height: 1.35;
+}
+
+.kpi-value {
+  font-size: 1.55rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.kpi-note {
+  margin-block-start: 2px;
+  padding: 1px 7px;
+  font-size: 0.68rem;
+  font-weight: 600;
+}
+
+/* ============================================================ facts matrices */
+
+.meta-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 24px;
+  margin-block-end: 14px;
+  padding: 14px 16px;
+  border: 1px solid var(--color-border-soft);
+  border-radius: 10px;
+  background: var(--color-surface-tint);
+}
+
+.meta-grid dt {
+  align-self: start;
+  font-size: 0.71rem;
+  font-weight: 600;
+  color: var(--color-faint);
+  line-height: 1.4;
+}
+
+.meta-grid dd {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.meta-grid dd.mono,
+.meta-grid .mono {
+  font-family: var(--font-mono);
+  font-size: 0.79rem;
+  font-weight: 600;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
+  gap: 12px 20px;
+  margin-block-end: 14px;
+  padding: 14px 16px;
+  border: 1px solid var(--color-border-soft);
+  border-radius: 10px;
+  background: var(--color-surface-tint);
+}
+
+.detail-grid > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.detail-grid .muted {
+  font-size: 0.71rem;
+  font-weight: 600;
+  color: var(--color-faint);
+}
+
+.detail-grid strong {
+  font-size: 0.87rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  overflow-wrap: anywhere;
+}
+
+/* Inside a card the matrix is a section, not a second card. */
+.card > .meta-grid,
+.card > .detail-grid {
+  border: 1px solid var(--color-border-soft);
+  background: var(--color-surface-tint);
+}
+
+/* ===================================================================== tabs */
+
+/* One segmented bar. It wraps instead of hiding tabs behind a scrollbar. */
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 3px;
+  align-self: flex-start;
+  max-width: 100%;
+  padding: 4px;
+  background: var(--color-bg-sunken);
+  border: 1px solid var(--color-border-soft);
+  border-radius: 12px;
+  box-shadow: none;
+  overflow: visible;
+}
+
+.tab {
+  position: relative;
+  flex: 0 0 auto;
+  min-height: 32px;
+  margin: 0;
+  padding: 6px 13px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-muted);
+  font-size: 0.81rem;
+  font-weight: 600;
+  box-shadow: none;
+  transition:
+    background var(--duration-fast) var(--ease),
+    color var(--duration-fast) var(--ease);
+}
+
+/* Earlier layers drew an underline pseudo-element; the pill replaces it. */
+.tab::after,
+.tab.is-active::after {
+  content: none;
+  display: none;
+}
+
+.tab:hover {
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--color-ink);
+}
+
+.tab.is-active,
+.tab.is-active:hover {
+  background: var(--color-surface);
+  color: var(--color-primary-strong);
+  border: 0;
+  box-shadow:
+    inset 0 0 0 1px var(--color-border-soft),
+    var(--shadow-xs);
+}
+
+.tab-content,
+.tab-panel {
+  gap: 16px;
+}
+
+/* ================================================================== toolbar */
+
+.toolbar,
+.card > .search-form,
+.card > .filter-row {
+  gap: 8px 10px;
+  padding: 8px 10px;
+  margin-block-end: 12px;
+  background: var(--color-bg-sunken);
+  border: 1px solid transparent;
+  border-radius: 10px;
+}
+
+.toolbar .field {
+  gap: 3px;
+}
+
+.toolbar .field > span {
+  font-size: 0.71rem;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+.toolbar .field input,
+.toolbar .field select,
+.toolbar .search-form input {
+  min-height: 32px;
+  font-size: 0.8rem;
+}
+
+.toolbar .field-inline select {
+  min-width: 160px;
+}
+
+/* =================================================================== tables */
+
+.table-wrap {
+  border-radius: 10px;
+  max-height: 64vh;
+  overflow: auto;
+}
+
+.card .table-wrap {
+  max-height: 60vh;
+}
+
+.data-table {
+  font-size: 0.83rem;
+}
+
+.data-table th {
+  padding: 9px 13px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--color-muted);
+  background: var(--color-surface-tint);
+  box-shadow: inset 0 -1px 0 var(--color-border);
+}
+
+.data-table td {
+  padding: 10px 13px;
+  color: var(--color-ink-soft);
+  line-height: 1.45;
+}
+
+.data-table tbody tr {
+  height: 42px;
+}
+
+.data-table tbody tr:hover {
+  background: var(--color-bg-soft);
+}
+
+.data-table tbody tr:last-child td {
+  border-block-end: 0;
+}
+
+.data-table td:first-child {
+  color: var(--color-ink);
+  font-weight: 600;
+}
+
+.data-table .cell-actions,
+.data-table .row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ================================================================= controls */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: var(--v6-control);
+  padding: 0.42rem 1rem;
+  border-radius: var(--v6-radius-control);
+  font-size: 0.83rem;
+  font-weight: 600;
+  line-height: 1.2;
+  box-shadow: none;
+  white-space: nowrap;
+}
+
+.button-sm {
+  min-height: var(--v6-control-sm);
+  padding: 0.2rem 0.65rem;
+  border-radius: 7px;
+  font-size: 0.76rem;
+}
+
+.button-ghost {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  color: var(--color-ink-soft);
+}
+
+.button-ghost:hover {
+  background: var(--color-bg-soft);
+  border-color: var(--color-primary);
+  color: var(--color-primary-strong);
+}
+
+.button:focus-visible,
+.button-ghost:focus-visible,
+.button-danger:focus-visible,
+.icon-button:focus-visible,
+.tab:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.icon-button {
+  width: var(--v6-control);
+  height: var(--v6-control);
+  border-radius: var(--v6-radius-control);
+}
+
+.field {
+  gap: 0.32rem;
+  font-size: 0.83rem;
+}
+
+.field > span {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--color-ink-soft);
+}
+
+.field input,
+.field select,
+.field textarea,
+.search-form input,
+.search-form select,
+.setting-value input,
+.setting-value select,
+.setting-value textarea {
+  min-height: var(--v6-control);
+  border-radius: var(--v6-radius-control);
+  border-color: var(--color-border-strong);
+  font-size: 0.83rem;
+}
+
+.field textarea {
+  min-height: 78px;
+}
+
+.field-hint {
+  font-size: 0.71rem;
+  line-height: 1.45;
+  color: var(--color-faint);
+}
+
+.field-error {
+  font-size: 0.71rem;
+  font-weight: 600;
+}
+
+.form-grid {
+  gap: 13px 16px;
+}
+
+.stack-form {
+  gap: 13px;
+}
+
+.form-actions {
+  gap: 8px;
+}
+
+/* A submit row that closes a form gets one hairline, not a floating gap. */
+.form-actions:last-child {
+  padding-block-start: 12px;
+  margin-block-start: 2px;
+  border-block-start: 1px solid var(--color-border-soft);
+}
+
+.form-actions:only-child {
+  padding-block-start: 0;
+  margin-block-start: 0;
+  border-block-start: 0;
+}
+
+.fieldset,
+fieldset {
+  border: 1px solid var(--color-border-soft);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin: 0;
+}
+
+.fieldset > legend,
+fieldset > legend {
+  padding-inline: 6px;
+  font-size: 0.79rem;
+  font-weight: 700;
+  color: var(--color-ink-soft);
+}
+
+.checkbox-item,
+.field-checkbox {
+  font-size: 0.81rem;
+}
+
+/* ======================================================= badges, chips, pills */
+
+.badge {
+  gap: 0.28rem;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  font-size: 0.69rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.chip {
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: var(--color-bg-soft);
+  border: 1px solid var(--color-border);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  line-height: 1.5;
+  color: var(--color-ink-soft);
+}
+
+.chip-row {
+  gap: 4px;
+}
+
+.status-pill {
+  padding: 2px 10px;
+  font-size: 0.71rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.phase-badge {
+  padding: 3px 10px;
+  font-size: 0.71rem;
+  font-weight: 600;
+}
+
+/* =================================================================== alerts */
+
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 9px 13px;
+  border: 1px solid transparent;
+  border-inline-start-width: 3px;
+  border-radius: 9px;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.alert-danger {
+  border-color: #f3cbc6;
+  border-inline-start-color: var(--color-danger);
+  color: #7f1d1d;
+}
+
+.alert-success {
+  border-color: #c5e8d5;
+  border-inline-start-color: var(--color-success);
+  color: #14532d;
+}
+
+.alert-warn {
+  border-color: #f2ddb8;
+  border-inline-start-color: var(--color-warn);
+  color: #7c3a06;
+}
+
+/* Yellow advisory strips share the alert geometry instead of a third shape. */
+.notice {
+  padding: 9px 13px;
+  border: 1px solid #f2ddb8;
+  border-inline-start: 3px solid var(--color-warn);
+  border-radius: 9px;
+  background: var(--color-warn-soft);
+  color: #7c3a06;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.hint {
+  padding: 10px 13px;
+  border-radius: 9px;
+  font-size: 0.8rem;
+  line-height: 1.55;
+}
+
+/* Sub-headings inside a card follow the card header scale. */
+.card h3 {
+  margin-block-end: 2px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--color-ink);
+}
+
+.card h4 {
+  margin-block-end: 2px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--color-ink-soft);
+}
+
+/* Inner surfaces (timeline, notes, wards, beds, drug lines) share one radius. */
+.timeline-body,
+.note-card,
+.board-item,
+.ward-patient-card,
+.bed-tile,
+.domain-block,
+.version-list > li,
+.drug-line {
+  border-radius: 10px;
+}
+
+/* ================================================================ empty data */
+
+.empty-inline {
+  padding: 13px 16px;
+  border: 1px dashed var(--color-border);
+  border-radius: 9px;
+  background: var(--color-bg-soft);
+  color: var(--color-muted);
+  font-size: 0.81rem;
+  line-height: 1.5;
+}
+
+/* Inside a card an empty message is quiet text, not a second dashed box. */
+.card > .empty-inline {
+  padding: 16px 2px;
+  border: 0;
+  background: transparent;
+}
+
+.empty-state {
+  padding: 38px 22px;
+  border-radius: var(--v6-radius-card);
+}
+
+.empty-state h2 {
+  font-size: 1.08rem;
+  margin-block-end: 6px;
+}
+
+/* =================================================================== boards */
+
+/* Clinical boards are lists, not walls: cap the height and scroll inside. */
+.card .board-list {
+  gap: 8px;
+  max-height: 360px;
+  overflow-y: auto;
+  padding-inline-end: 4px;
+  scrollbar-gutter: stable;
+}
+
+.board-item {
+  gap: 6px;
+  padding: 11px 13px;
+  border: 1px solid var(--color-border-soft);
+  border-radius: 10px;
+  background: var(--color-surface);
+}
+
+.board-item:hover {
+  border-color: var(--color-border-strong);
+}
+
+.board-item-head {
+  gap: 6px;
+}
+
+.board-item-head strong {
+  font-size: 0.89rem;
+  font-weight: 700;
+}
+
+.board-item-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-block-start: 2px;
+}
+
+.split-grid {
+  grid-template-columns: repeat(auto-fit, minmax(262px, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+/* ==================================================================== modal */
+
+.modal-backdrop {
+  background: rgba(11, 37, 69, 0.44);
+  backdrop-filter: blur(3px);
+}
+
+.modal {
+  border-radius: 16px;
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-lg);
+  max-height: 88vh;
+}
+
+.modal-header {
+  padding: 13px 20px;
+  background: var(--color-surface-tint);
+}
+
+.modal-header h2 {
+  font-size: 0.97rem;
+  font-weight: 700;
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  padding: 18px 20px;
+}
+
+/* ================================================================== sidebar */
+
+.nav-link {
+  gap: 10px;
+  padding: 8px 11px;
+  border-radius: var(--v6-radius-control);
+  font-size: 0.835rem;
+  font-weight: 500;
+}
+
+.nav-link.is-active {
+  font-weight: 600;
+  box-shadow: none;
+}
+
+.nav-link.is-active::before {
+  inset-block: 8px;
+  width: 3px;
+  border-radius: var(--radius-pill);
+}
+
+.nav-heading {
+  padding: 10px 10px 4px;
+  font-size: 0.67rem;
+  font-weight: 700;
+  letter-spacing: normal;
+  color: #7f97ac;
+}
+
+.sidebar-footer {
+  border-radius: 10px;
+}
+
+.lang-button {
+  min-height: 32px;
+  border-radius: var(--radius-pill);
+  font-size: 0.76rem;
+}
+
+/* =================================================================== footer */
+
+.footer {
+  padding: 13px 24px;
+  font-size: 0.71rem;
+}
+
+/* ==================================================================== print */
+
+@media print {
+  .tabs {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    border-radius: 0;
+  }
+
+  .tab.is-active {
+    box-shadow: none;
+  }
+
+  /* Never force a page break on a card: the Arabic lab report is one tall
+     sheet and must flow across printed pages without clipping. */
+  .card,
+  .kpi-grid,
+  .meta-grid,
+  .detail-grid {
+    box-shadow: none;
+  }
+
+  .card .board-list,
+  .table-wrap {
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+/* ================================================================ responsive */
+
+@media (max-width: 900px) {
+  .content {
+    padding: 16px 16px 26px;
+  }
+
+  .page-header {
+    align-items: flex-start;
+  }
+
+  .meta-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px 16px;
+  }
+}
+
+@media (max-width: 700px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .tabs {
+    width: 100%;
+  }
+
+  .tab {
+    flex: 1 1 auto;
+  }
+
+  .kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .kpi-grid > .kpi-card {
+    border-inline-start: 0;
+    border-block-start: 1px solid var(--color-border-soft);
+  }
+
+  .kpi-grid > .kpi-card:first-child,
+  .kpi-grid > .kpi-card:nth-child(2) {
+    border-block-start: 0;
+  }
+
+  .split-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .meta-grid {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+
+  .meta-grid dd {
+    margin-block-end: 8px;
+  }
+
+  .card {
+    padding: 14px;
+  }
+
+  .button {
+    min-height: 38px;
+  }
+}

@@ -1,0 +1,32 @@
+# Smart Hospital — external configuration template
+# Copy to /etc/smart-hospital/hospital.properties (production) or
+# %USERPROFILE%\smart-hospital\hospital.properties (development).
+# Never commit the real file.
+
+app.name=Smart Hospital
+app.version=0.1.0-phase1
+app.environment=DEV
+app.default-locale=ar
+app.supported-locales=ar,en
+app.timezone=Asia/Amman
+
+# Health endpoint
+health.disk.path=.
+health.disk.min-free-mb=2048
+health.db.timeout-seconds=3
+
+# Session / security (activated in Phase 2)
+security.session.timeout-minutes=30
+security.session.cookie-name=SH_SESSION
+security.csrf.cookie-name=SH_CSRF
+security.password.iterations=600000
+
+# Attachments (Phase 3+)
+files.root=./data/attachments
+files.max-size-mb=10
+
+# Feature flags (default off until the owning phase is accepted)
+feature.bcma=false
+feature.ews=false
+feature.sse=false
+feature.analytics=false

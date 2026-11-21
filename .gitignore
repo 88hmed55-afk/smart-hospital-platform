@@ -1,0 +1,42 @@
+# Build outputs
+build/
+dist/
+*.ear
+*.war
+*.class
+
+# Frontend
+node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Local configuration and secrets
+hospital.properties
+db.properties
+build.properties
+*.local.properties
+*.pem
+*.key
+*.p12
+*.jks
+
+# IDE
+nbproject/private/
+.nb-gradle/
+.idea/
+*.iml
+.vscode/
+
+# OS / logs
+.DS_Store
+Thumbs.db
+*.log
+logs/
+
+# Test and coverage
+coverage/
+test-results/
+playwright-report/
+
+# Keep library placeholders
+!**/lib/.gitkeep

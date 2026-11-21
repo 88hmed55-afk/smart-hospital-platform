@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="smart-hospital-war" default="war">
+
+    <description>Smart Hospital — Web module (JAX-RS + React build)</description>
+
+    <property file="../build.properties"/>
+    <property environment="env"/>
+    <property name="src.dir" location="src/java"/>
+    <property name="web.dir" location="web"/>
+    <property name="frontend.dist" location="../frontend/dist"/>
+    <property name="ejb.jar" location="../smart-hospital-ejb/dist/smart-hospital-ejb.jar"/>
+    <property name="build.dir" location="build"/>
+    <property name="dist.dir" location="dist"/>
+    <property name="classes.dir" location="${build.dir}/classes"/>
+    <property name="webapp.dir" location="${build.dir}/webapp"/>
+    <property name="jakarta.api.jar"
+              value="${user.home}/.smart-hospital/lib/jakarta.jakartaee-api-10.0.0.jar"/>
+
+    <target name="check-tools">
+        <fail message="Jakarta EE 10 API jar not found: ${jakarta.api.jar}">
+            <condition>
+                <not><available file="${jakarta.api.jar}"/></not>
+            </condition>
+        </fail>
+        <fail message="EJB jar not found: ${ejb.jar}. Build smart-hospital-ejb first.">
+            <condition>
+                <not><available file="${ejb.jar}"/></not>
+            </condition>
+        </fail>
+    </target>
+
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+        <delete dir="${dist.dir}"/>
+    </target>
+
+    <target name="init">
+        <mkdir dir="${classes.dir}"/>
+        <mkdir dir="${dist.dir}"/>
+        <mkdir dir="${webapp.dir}"/>
+    </target>
+
+    <target name="compile" depends="check-tools, init">
+        <javac srcdir="${src.dir}"
+               destdir="${classes.dir}"
+               release="17"
+               encoding="UTF-8"
+               debug="true"
+               includeantruntime="false">
+            <compilerarg value="-Xlint:all"/>
+            <classpath>
+                <pathelement location="${jakarta.api.jar}"/>
+                <pathelement location="${ejb.jar}"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="stage" depends="compile">
+        <copy todir="${webapp.dir}" overwrite="true">
+            <fileset dir="${web.dir}" excludes="**/*.tmp"/>
+        </copy>
+        <copy todir="${webapp.dir}" overwrite="true" failonerror="false">
+            <fileset dir="${frontend.dist}" erroronmissingdir="false"/>
+        </copy>
+        <copy todir="${webapp.dir}/WEB-INF/classes" overwrite="true">
+            <fileset dir="${classes.dir}" includes="**/*.class"/>
+        </copy>
+    </target>
+
+    <target name="war" depends="stage">
+        <war destfile="${dist.dir}/smart-hospital.war" webxml="${webapp.dir}/WEB-INF/web.xml">
+            <fileset dir="${webapp.dir}" excludes="WEB-INF/web.xml"/>
+        </war>
+        <echo message="Built ${dist.dir}/smart-hospital.war"/>
+    </target>
+</project>

@@ -1,0 +1,9 @@
+# Database connection for the migration runner — copy to db.properties.
+# Use the migration account, never the application account.
+db.url=jdbc:mysql://127.0.0.1:3306/smart_hospital?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC&allowMultiQueries=true
+db.user=sh_migrator
+db.password=CHANGE_ME
+db.name=smart_hospital
+
+# Path to MySQL Connector/J (also settable via -Dmysql.connector.jar).
+# mysql.connector.jar=C:/smart-hospital/lib/mysql-connector-j-8.4.0.jar

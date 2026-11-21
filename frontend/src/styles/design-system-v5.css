@@ -1,0 +1,481 @@
+/*
+ * Smart Hospital — design system v5 "calm density"
+ * ---------------------------------------------------------------------------
+ * Loaded last so it refines the v1–v4 layers without rewriting module markup.
+ *
+ * The goal is one rhythm the eye can learn in three seconds:
+ *   • a page header band with a hairline, then 20px of air;
+ *   • one card radius (14px), one control radius (10px), pills stay pills;
+ *   • 44px table rows with a sticky header and 40px controls;
+ *   • no decorative gradients or shadows outside the login brand moment;
+ *   • a flat, quiet sidebar and an integrated module matrix on the dashboard.
+ *
+ * Everything here is additive: removing this file returns the previous look.
+ */
+
+:root {
+  --v5-radius-card: 14px;
+  --v5-radius-control: 10px;
+  --v5-radius-chip: 8px;
+  --v5-page-gap: 20px;
+  --v5-row-height: 44px;
+  --v5-control-height: 40px;
+}
+
+/* =================================================================== canvas */
+
+/* The canvas is one calm neutral. Gradients belonged to an earlier layer. */
+body {
+  background: var(--color-bg);
+}
+
+/* Thin, unobtrusive scrollbars keep dense screens readable. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #c8d3e0 transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #c8d3e0;
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background-clip: content-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #aebccd;
+  background-clip: content-box;
+}
+
+/* ==================================================================== shell */
+
+.sidebar {
+  background: #0b2136;
+  box-shadow: none;
+  border-inline-end: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.brand-mark {
+  border-radius: 12px;
+  background: #0f766e;
+  box-shadow: none;
+}
+
+.nav-link {
+  border-radius: var(--v5-radius-chip);
+  padding-block: 0.55rem;
+}
+
+.nav-link.is-active {
+  box-shadow: none;
+}
+
+.nav-heading {
+  color: #7f97ac;
+}
+
+.sidebar-footer {
+  border-radius: var(--v5-radius-control);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.topbar {
+  background: rgba(255, 255, 255, 0.94);
+  border-block-end: 1px solid var(--color-border);
+}
+
+.topbar-dot {
+  box-shadow: 0 0 0 3px var(--color-success-soft);
+}
+
+/* The user chip is identity, not decoration: one flat tint. */
+.avatar {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-ink);
+}
+
+/* ===================================================================== page */
+
+.content {
+  padding: 22px 26px 32px;
+}
+
+.page {
+  gap: var(--v5-page-gap);
+}
+
+/* One header band: title left, actions right, hairline underneath. */
+.page-header {
+  align-items: center;
+  gap: 16px;
+  padding-block-end: 14px;
+  border-block-end: 1px solid var(--color-border);
+}
+
+.page-header h1 {
+  font-size: clamp(1.28rem, 1.12rem + 0.4vw, 1.42rem);
+  font-weight: 700;
+  line-height: 1.28;
+  letter-spacing: -0.018em;
+}
+
+.page-header .muted,
+.page-header .page-subtitle {
+  margin-block-start: 2px;
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+.header-actions {
+  gap: 8px;
+}
+
+/* ==================================================================== cards */
+
+.card {
+  padding: 18px 20px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--v5-radius-card);
+  box-shadow: none;
+}
+
+.card-header {
+  padding-block-end: 12px;
+  margin-block-end: 14px;
+  border-block-end: 1px solid var(--color-border-soft);
+}
+
+.card-header h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+}
+
+.card-header .muted {
+  font-size: 0.8rem;
+}
+
+.kpi-card,
+.card.kpi-card {
+  border-radius: var(--v5-radius-card);
+  padding: 16px 18px;
+}
+
+.kpi-value {
+  font-size: 1.6rem;
+}
+
+/* Section break inside a card, not a second card. */
+.card > .card-header ~ .card-header {
+  margin-block-start: 16px;
+  padding-block-start: 14px;
+  border-block-start: 1px solid var(--color-border-soft);
+  border-block-end: 0;
+}
+
+/* Inner panels lose their own frame; the card is the frame. */
+.card > .meta-grid,
+.card > .detail-grid,
+.card > .summary-grid,
+.card .table-wrap {
+  border: 0;
+  background: transparent;
+}
+
+.meta-grid {
+  border-radius: var(--v5-radius-control);
+  border-color: var(--color-border-soft);
+  background: var(--color-surface-tint);
+}
+
+.check-row {
+  border-block-start: 1px solid var(--color-border-soft);
+}
+
+/* ===================================================================== tabs */
+
+.tabs {
+  gap: 4px;
+  box-shadow: inset 0 -1px 0 var(--color-border);
+}
+
+.tab {
+  padding: 10px 14px 12px;
+  border-radius: var(--v5-radius-chip) var(--v5-radius-chip) 0 0;
+  font-size: 0.83rem;
+}
+
+.tab:hover {
+  background: var(--color-bg-sunken);
+}
+
+/* Eight Arabic tabs do not fit a 1024px canvas: wrap instead of hiding the
+   overflow behind an invisible horizontal scrollbar. */
+@media (max-width: 1180px) {
+  .tabs {
+    flex-wrap: wrap;
+    overflow: visible;
+    box-shadow: none;
+    border-block-end: 1px solid var(--color-border);
+  }
+
+  .tab {
+    border-radius: var(--v5-radius-chip);
+  }
+
+  .tab::after {
+    inset-inline: 10px;
+    inset-block-end: 2px;
+  }
+}
+
+.tab-content,
+.tab-panel {
+  gap: 16px;
+}
+
+/* ================================================================== toolbar */
+
+/* A filter bar is a quiet strip, not a boxed form. */
+.toolbar,
+.card > .search-form,
+.card > .filter-row {
+  padding: 8px 10px;
+  background: var(--color-bg-sunken);
+  border: 0;
+  border-radius: var(--v5-radius-control);
+  margin-block-end: 14px;
+}
+
+.toolbar {
+  gap: 8px 10px;
+}
+
+/* =================================================================== tables */
+
+.table-wrap {
+  border-radius: 12px;
+  max-height: 72vh;
+  overflow: auto;
+}
+
+.card .table-wrap {
+  max-height: 68vh;
+}
+
+.data-table {
+  font-size: 0.845rem;
+}
+
+/* Sticky headers keep the column meaning visible in long registers. */
+.data-table th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding: 10px 14px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  background: var(--color-surface-tint);
+  box-shadow: inset 0 -1px 0 var(--color-border);
+}
+
+.data-table td {
+  padding: 12px 14px;
+}
+
+.data-table tbody tr {
+  height: var(--v5-row-height);
+}
+
+.data-table tbody tr:hover {
+  background: var(--color-bg-soft);
+}
+
+/* ================================================================== controls */
+
+.button {
+  min-height: var(--v5-control-height);
+  padding: 0.5rem 1.15rem;
+  border-radius: var(--v5-radius-control);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.button-sm {
+  min-height: 32px;
+  padding: 0.25rem 0.7rem;
+  border-radius: var(--v5-radius-chip);
+  font-size: 0.78rem;
+}
+
+.icon-button {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--v5-radius-control);
+}
+
+.field {
+  font-size: 0.845rem;
+}
+
+.field > span {
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.field input,
+.field select,
+.field textarea,
+.search-form input,
+.search-form select,
+.setting-value input,
+.setting-value select,
+.setting-value textarea {
+  min-height: var(--v5-control-height);
+  border-radius: var(--v5-radius-control);
+  border-color: var(--color-border-strong);
+  font-size: 0.845rem;
+}
+
+.field textarea {
+  min-height: 84px;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus,
+.search-form input:focus,
+.setting-value input:focus,
+.setting-value select:focus,
+.setting-value textarea:focus {
+  box-shadow: 0 0 0 3px rgba(13, 125, 116, 0.16);
+}
+
+.lang-button {
+  border-radius: var(--v5-radius-chip);
+}
+
+/* ======================================================== dashboard matrix */
+
+/*
+ * The module launcher is one integrated matrix: 1px hairlines instead of a
+ * border around every tile. Tiles carry only the end/bottom hairline, so a
+ * short last row leaves no empty grey cells.
+ */
+.card:has(> .module-grid) {
+  padding: 0;
+  overflow: hidden;
+}
+
+.card:has(> .module-grid) > .card-header {
+  margin: 0;
+  padding: 16px 20px 14px;
+  border-block-end: 1px solid var(--color-border-soft);
+}
+
+.module-grid {
+  gap: 0;
+  background: transparent;
+  grid-template-columns: repeat(auto-fill, minmax(238px, 1fr));
+}
+
+.module-tile {
+  gap: 14px;
+  padding: 15px 18px;
+  border: 0;
+  border-inline-end: 1px solid var(--color-border-soft);
+  border-block-end: 1px solid var(--color-border-soft);
+  border-radius: 0;
+  background: var(--color-surface);
+}
+
+.module-tile:hover {
+  background: var(--color-primary-softer);
+  transform: none;
+}
+
+.module-tile:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+  box-shadow: none;
+}
+
+.module-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+}
+
+.module-body strong {
+  font-size: 0.875rem;
+}
+
+.module-body small {
+  font-size: 0.78rem;
+}
+
+/* =================================================================== footer */
+
+.footer {
+  padding: 14px 26px;
+  border-block-start: 1px solid var(--color-border-soft);
+  font-size: 0.76rem;
+  color: var(--color-faint);
+}
+
+/* ==================================================================== print */
+
+@media print {
+  .table-wrap,
+  .card .table-wrap {
+    max-height: none;
+    overflow: visible;
+  }
+
+  .data-table th {
+    position: static;
+    box-shadow: none;
+  }
+}
+
+/* ================================================================ responsive */
+
+@media (max-width: 1024px) {
+  .content {
+    padding-inline: 18px;
+  }
+
+  .module-grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .content {
+    padding: 16px 14px 26px;
+  }
+
+  .page-header {
+    align-items: flex-start;
+  }
+
+  .card {
+    padding: 16px 14px;
+    border-radius: 12px;
+  }
+
+  .module-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .data-table td,
+  .data-table th {
+    padding-inline: 12px;
+  }
+}

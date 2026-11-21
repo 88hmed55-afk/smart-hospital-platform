@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<project name="smart-hospital-db" default="db-status">
+
+    <description>Smart Hospital â€” migrations, seed and verification</description>
+
+    <property file="../build.properties"/>
+    <property environment="env"/>
+    <property name="project.root" location=".."/>
+    <property name="db.root" location="."/>
+    <property name="tools.src" location="tools/src"/>
+    <property name="tools.build" location="tools/build"/>
+    <property name="mysql.connector.jar"
+              value="${user.home}/.smart-hospital/lib/mysql-connector-j-8.4.0.jar"/>
+    <property name="db.config" location="db.properties"/>
+
+    <target name="check-tools">
+        <fail message="MySQL Connector/J not found: ${mysql.connector.jar}. Set mysql.connector.jar in build.properties.">
+            <condition>
+                <not><available file="${mysql.connector.jar}"/></not>
+            </condition>
+        </fail>
+    </target>
+
+    <target name="check-config" depends="check-tools">
+        <fail message="Missing ${db.config}. Copy db/db.properties.example to db/db.properties.">
+            <condition>
+                <not><available file="${db.config}"/></not>
+            </condition>
+        </fail>
+    </target>
+
+    <target name="compile-runner" depends="check-tools">
+        <mkdir dir="${tools.build}"/>
+        <javac srcdir="${tools.src}"
+               destdir="${tools.build}"
+               release="17"
+               encoding="UTF-8"
+               debug="true"
+               includeantruntime="false">
+            <classpath>
+                <pathelement location="${mysql.connector.jar}"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="db-migrate" depends="compile-runner, check-config">
+        <java classname="com.smarthospital.db.MigrationRunner" fork="true" failonerror="true">
+            <sysproperty key="db.root" value="${db.root}"/>
+            <sysproperty key="db.properties" value="${db.config}"/>
+            <classpath>
+                <pathelement location="${tools.build}"/>
+                <pathelement location="${mysql.connector.jar}"/>
+            </classpath>
+            <arg value="migrate"/>
+        </java>
+    </target>
+
+    <target name="db-seed" depends="compile-runner, check-config">
+        <java classname="com.smarthospital.db.MigrationRunner" fork="true" failonerror="true">
+            <sysproperty key="db.root" value="${db.root}"/>
+            <sysproperty key="db.properties" value="${db.config}"/>
+            <classpath>
+                <pathelement location="${tools.build}"/>
+                <pathelement location="${mysql.connector.jar}"/>
+            </classpath>
+            <arg value="seed"/>
+        </java>
+    </target>
+
+    <target name="db-verify" depends="compile-runner, check-config">
+        <java classname="com.smarthospital.db.MigrationRunner" fork="true" failonerror="true">
+            <sysproperty key="db.root" value="${db.root}"/>
+            <sysproperty key="db.properties" value="${db.config}"/>
+            <classpath>
+                <pathelement location="${tools.build}"/>
+                <pathelement location="${mysql.connector.jar}"/>
+            </classpath>
+            <arg value="verify"/>
+        </java>
+    </target>
+
+    <target name="db-status" depends="compile-runner, check-config">
+        <java classname="com.smarthospital.db.MigrationRunner" fork="true" failonerror="true">
+            <sysproperty key="db.root" value="${db.root}"/>
+            <sysproperty key="db.properties" value="${db.config}"/>
+            <classpath>
+                <pathelement location="${tools.build}"/>
+                <pathelement location="${mysql.connector.jar}"/>
+            </classpath>
+            <arg value="status"/>
+        </java>
+    </target>
+
+    <target name="clean">
+        <delete dir="${tools.build}"/>
+    </target>
+</project>
+

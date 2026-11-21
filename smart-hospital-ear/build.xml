@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="smart-hospital-ear" default="ear">
+
+    <description>Smart Hospital — Enterprise archive (EJB + WAR)</description>
+
+    <property file="../build.properties"/>
+    <property environment="env"/>
+    <!-- Unique names: <ant> inherits parent properties, and Ant properties are
+         immutable. Using build.dir/dist.dir here would leak into the EJB and
+         WAR sub-builds and make them write into the EAR directory. -->
+    <property name="ear.dist.dir" location="dist"/>
+    <property name="ear.build.dir" location="build"/>
+
+    <condition property="npm.executable" value="npm.cmd" else="npm">
+        <os family="windows"/>
+    </condition>
+
+    <target name="clean">
+        <ant dir="../smart-hospital-ejb" target="clean" inheritall="false"/>
+        <ant dir="../smart-hospital-war" target="clean" inheritall="false"/>
+        <delete dir="${ear.build.dir}"/>
+        <delete dir="${ear.dist.dir}"/>
+    </target>
+
+    <target name="frontend" description="Build the React bundle into frontend/dist">
+        <exec executable="${npm.executable}" dir="../frontend" failonerror="true">
+            <arg value="run"/>
+            <arg value="build"/>
+        </exec>
+    </target>
+
+    <target name="ejb">
+        <ant dir="../smart-hospital-ejb" target="jar" inheritall="false"/>
+    </target>
+
+    <target name="war" depends="ejb">
+        <ant dir="../smart-hospital-war" target="war" inheritall="false"/>
+    </target>
+
+    <target name="ear" depends="war">
+        <mkdir dir="${ear.dist.dir}"/>
+        <ear destfile="${ear.dist.dir}/smart-hospital.ear"
+             appxml="src/conf/application.xml"
+             compress="true">
+            <fileset dir="../smart-hospital-ejb/dist" includes="smart-hospital-ejb.jar"/>
+            <fileset dir="../smart-hospital-war/dist" includes="smart-hospital.war"/>
+        </ear>
+        <echo message="Built ${ear.dist.dir}/smart-hospital.ear"/>
+    </target>
+
+    <target name="full" depends="clean, frontend, ear" description="Clean build including frontend"/>
+</project>
